@@ -177,8 +177,18 @@ try {
     $stmt->execute([$_SESSION['user_id']]);
     $payment_methods = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
-    // Get transaction history
-    $stmt = $pdo->prepare("SELECT * FROM transactions WHERE user_id = ? ORDER BY created_at DESC LIMIT 10");
+    // Get transaction history with product details
+    $stmt = $pdo->prepare("
+        SELECT t.*, GROUP_CONCAT(p.name SEPARATOR ', ') as product_names 
+        FROM transactions t
+        LEFT JOIN orders o ON t.reference_id = o.order_number
+        LEFT JOIN order_items oi ON o.id = oi.order_id
+        LEFT JOIN products p ON oi.product_id = p.id
+        WHERE t.user_id = ? 
+        GROUP BY t.id
+        ORDER BY t.created_at DESC 
+        LIMIT 10
+    ");
     $stmt->execute([$_SESSION['user_id']]);
     $transactions = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
@@ -597,7 +607,16 @@ try {
                                                     <?php echo date('M j, Y', strtotime($transaction['created_at'])); ?>
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                                                    <?php echo htmlspecialchars($transaction['description']); ?>
+                                                    <?php 
+                                                    if (!empty($transaction['product_names'])) {
+                                                        echo htmlspecialchars($transaction['product_names']);
+                                                        if (!empty($transaction['description']) && strpos($transaction['description'], 'Purchase') === false) {
+                                                            echo ' <span class="text-xs text-gray-500">(' . htmlspecialchars($transaction['description']) . ')</span>';
+                                                        }
+                                                    } else {
+                                                        echo htmlspecialchars($transaction['description']); 
+                                                    }
+                                                    ?>
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium <?php echo $transaction['amount'] < 0 ? 'text-red-400' : 'text-green-400'; ?>">
                                                     <?php echo ($transaction['amount'] > 0 ? '+' : '') . '$' . number_format($transaction['amount'], 2); ?>
@@ -646,10 +665,39 @@ try {
                         <div class="mt-6">
                             <h3 class="text-lg font-semibold mb-3 text-gray-300">Recent Transactions</h3>
 
-                            <div class="bg-gray-800/50 border border-gray-700 rounded-lg p-6 text-center">
-                                <i class="fas fa-exchange-alt text-4xl text-gray-500 mb-3"></i>
-                                <p class="text-gray-400">No recent transactions</p>
-                            </div>
+                            <?php if (empty($transactions)): ?>
+                                <div class="bg-gray-800/50 border border-gray-700 rounded-lg p-6 text-center">
+                                    <i class="fas fa-exchange-alt text-4xl text-gray-500 mb-3"></i>
+                                    <p class="text-gray-400">No recent transactions</p>
+                                </div>
+                            <?php else: ?>
+                                <div class="space-y-3">
+                                    <?php foreach (array_slice($transactions, 0, 5) as $transaction): ?>
+                                        <div class="flex justify-between items-center bg-gray-900/50 p-3 rounded-lg border border-gray-700 hover:bg-gray-800 transition duration-200">
+                                            <div class="flex items-center overflow-hidden">
+                                                <div class="flex-shrink-0 mr-3 p-2 rounded-full <?php echo $transaction['type'] == 'deposit' ? 'bg-green-900/30 text-green-400' : 'bg-blue-900/30 text-blue-400'; ?>">
+                                                    <i class="fas <?php echo $transaction['type'] == 'deposit' ? 'fa-arrow-down' : 'fa-shopping-cart'; ?>"></i>
+                                                </div>
+                                                <div class="min-w-0">
+                                                    <p class="text-sm font-medium text-white truncate" title="<?php echo htmlspecialchars(!empty($transaction['product_names']) ? $transaction['product_names'] : $transaction['description']); ?>">
+                                                        <?php 
+                                                        if (!empty($transaction['product_names'])) {
+                                                            echo htmlspecialchars($transaction['product_names']);
+                                                        } else {
+                                                            echo htmlspecialchars($transaction['description']); 
+                                                        }
+                                                        ?>
+                                                    </p>
+                                                    <p class="text-xs text-gray-400"><?php echo date('M j, Y h:i A', strtotime($transaction['created_at'])); ?></p>
+                                                </div>
+                                            </div>
+                                            <div class="flex-shrink-0 ml-2 font-bold <?php echo $transaction['type'] == 'deposit' ? 'text-green-400' : 'text-red-400'; ?>">
+                                                <?php echo ($transaction['type'] == 'deposit' ? '+' : '-') . ' ₱' . number_format(abs($transaction['amount']), 2); ?>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
 
