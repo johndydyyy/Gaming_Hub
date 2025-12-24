@@ -47,9 +47,9 @@ A deep-dive manage your profile, saved cards, and account balance.
    ```bash
    git clone [https://github.com/johndydyyy/GamingHub.git](https://github.com/johndydyyy/GamingHub.git)
    
-2. **Move to Web Directory Copy the folder to your XAMPP htdocs directory.
+2. **Move to Web Directory Copy the folder to your XAMPP htdocs directory**
 
-3. **Database Setup
+3. **Database Setup**
 
 *Open phpMyAdmin.
 
@@ -57,7 +57,7 @@ A deep-dive manage your profile, saved cards, and account balance.
 
 *Import the database.sql file provided in the repository.
 
-4. **Run the Project
+4. **Run the Project**
 
 Start Apache and MySQL in XAMPP.
 
