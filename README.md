@@ -51,17 +51,17 @@ A deep-dive manage your profile, saved cards, and account balance.
 
 3. **Database Setup**
 
-*Open phpMyAdmin.
+* **Open phpMyAdmin.
 
-*Create a new database named gaming_hub.
+* **Create a new database named gaming_hub.
 
-*Import the database.sql file provided in the repository.
+* **Import the database.sql file provided in the repository.
 
 4. **Run the Project**
 
-Start Apache and MySQL in XAMPP.
+* **Start Apache and MySQL in XAMPP.
 
-Open your browser and go to localhost/GamingHub/login.php.
+* **Open your browser and go to localhost/GamingHub/login.php.
 
 ## Contributing
 Fork the Project
