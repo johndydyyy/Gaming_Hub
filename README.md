@@ -20,14 +20,17 @@ A premium e-commerce platform dedicated to high-performance gaming PCs and compo
 
 ###  Dashboard
 Browse high-performance builds with a grid-based, dark-mode UI.
+
 ![Marketplace](https://github.com/johndydyyy/Gaming_Hub/blob/82c5eda4813f7f755172c4cc88f9ad2f30a79552/Screenshot%202025-12-24%20183525.png)
 
 ### Cart
 Manage your orders with an intuitive summary and SSL-secure checkout simulation.
+
 ![Cart](https://github.com/johndydyyy/Gaming_Hub/blob/82c5eda4813f7f755172c4cc88f9ad2f30a79552/Screenshot%202025-12-24%20183547.png)
 
 ###  Manage Account
 A deep-dive manage your profile, saved cards, and account balance.
+
 ![Account](https://github.com/johndydyyy/Gaming_Hub/blob/82c5eda4813f7f755172c4cc88f9ad2f30a79552/Screenshot%202025-12-24%20183900.png)
 
 ---
